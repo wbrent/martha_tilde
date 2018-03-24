@@ -1,0 +1,213 @@
+#N canvas 350 195 756 576 10;
+#X obj 26 147 readsf~;
+#X text 293 161 http://en.wikipedia.org/wiki/Martha_Freud;
+#N canvas 4 23 592 473 output 0;
+#X obj 370 277 *~;
+#X obj 362 306 dac~;
+#X floatatom 110 118 5 0 148 1 dB - -, f 5;
+#X obj 380 195 dbtorms;
+#X obj 380 217 pack f 40;
+#X obj 380 239 line~;
+#X obj 306 126 inlet~;
+#X connect 0 0 1 0;
+#X connect 0 0 1 1;
+#X connect 2 0 3 0;
+#X connect 3 0 4 0;
+#X connect 4 0 5 0;
+#X connect 5 0 0 1;
+#X connect 6 0 0 0;
+#X coords 0 -1 1 1 100 40 1 100 100;
+#X restore 78 441 pd output;
+#X obj 26 217 sigmund~ -npts 4096 -hop 1024 -npeak 18 -maxfreq 15000
+tracks;
+#X text 304 268 <<<< See inside for control messages;
+#X text 231 392 Creation arguments;
+#X text 231 412 \$1: -npeak value used for the attached sigmund~;
+#N canvas 397 94 1173 837 commands 0;
+#X obj 55 778 outlet;
+#X text 184 466 Glissando range in semitones;
+#X text 252 601 Turn processing on/off (big oscillator banks are expensive!)
+, f 34;
+#X text 275 192 Attack time range in milliseconds;
+#X text 305 223 Release time range in milliseconds;
+#X text 294 501 Range for time elapsed before beginning glissandi (ms)
+, f 31;
+#X text 294 542 Glissando duration range in milliseconds, f 22;
+#X text 824 433 Tremolo range in Hz;
+#X text 230 279 Transposition in semitones;
+#X obj 608 94 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 0
+1;
+#X msg 608 114 osc-bandpass-switch \$1;
+#X text 642 66 Use either sinusoids (0) or band-pass filtered white
+noise (1) to synthesize partials., f 36;
+#X floatatom 646 145 5 0 0 0 - - -, f 5;
+#X msg 646 164 bandpass-q \$1;
+#X floatatom 676 195 5 0 0 0 - - -, f 5;
+#X msg 676 214 bandpass-makeup-gain \$1;
+#X text 751 148 If using band-pass filtered noise \, set the filter
+Q. Beware of gain changes with changes in Q \, and set the makeup gain
+accordingly., f 36;
+#X obj 608 255 s \$0-martha;
+#X floatatom 584 324 5 0 0 0 - - -, f 5;
+#X floatatom 614 374 5 0 0 0 - - -, f 5;
+#X msg 584 344 vib-speed \$1;
+#X msg 614 394 vib-depth \$1;
+#X obj 584 495 s \$0-martha;
+#X text 709 338 Set the frequency and depth (in semitones) of a vibrato
+LFO. All partials have phase-aligned vibrato from a single LFO., f
+30;
+#X obj 566 588 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 0
+1;
+#X msg 566 608 pitch-switch \$1;
+#X msg 596 638 pitch-list 57 60 64 67 69 72 74 77;
+#X text 852 637 Provide an 8-element MIDI pitch list. Partials found
+in the signal will line up with the harmonics of one of these pitches.
+, f 35;
+#X text 598 560 Force partials to harmonic arrangements to sound "pitchy"
+no matter what. Specify which pitches using the pitch-list message
+below.;
+#X msg 606 669 pitch-list 57 57 57 57 57 57 57 57;
+#X obj 566 719 s \$0-martha;
+#X obj 55 738 r \$0-martha;
+#X obj 32 109 s \$0-martha;
+#X obj 55 387 s \$0-martha;
+#X obj 219 620 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 0
+1;
+#X msg 219 640 dsp-switch \$1;
+#X msg 55 467 gliss-range -3 5;
+#X msg 105 547 gliss-dur-range 1000 2000;
+#X msg 99 194 attack-time-range 125 250;
+#X floatatom 145 260 5 0 0 0 - - -, f 5;
+#X msg 145 279 transpo \$1;
+#X msg 85 507 gliss-onset-delay-range 50 750;
+#X msg 249 680 killall bang;
+#X msg 644 434 tremolo-rate-range 0.25 5;
+#X obj 55 608 s \$0-martha;
+#X obj 219 751 s \$0-martha;
+#X text 277 708 Immediately kill all active oscillators, f 22;
+#X text 431 45 << Internal defaults;
+#X text 230 333 ****NOTE**** \; Many commands specify a range \, where
+individual partials are assigned random values within those bounds.
+This creates more variety. Make the lower and upper bounds of any range
+identical to insist on a specific value for all partials., f 41;
+#X text 162 150 Amplitude thresh in percent. Quieter partials will
+not be synthesized.;
+#X msg 55 156 amp-thresh 0.1;
+#X msg 155 299 transpo-ramptime 0;
+#X text 280 299 Duration of ramp to new pitch in milliseconds;
+#X obj 702 773 s \$0-martha;
+#X text 852 727 Switch any individual track on or off. \$1 is track
+index \, \$2 is on/off (0/1)., f 40;
+#X msg 702 722 track-switches 3 0;
+#X msg 712 742 track-switches 3 1;
+#X msg 32 24 amp-thresh 0.2 \, attack-time-range 5 10 \, release-time-range
+250 500 \, transpo 0 \, transpo-ramptime 40 \, gliss-range 0 0 \, gliss-onset-delay-range
+50 750 \, gliss-dur-range 500 2000 \, tremolo-rate-range 0 0 \, pitch-switch
+0 \, osc-bandpass-switch 0 \, bandpass-q 350 \, bandpass-makeup-gain
+80 \, vib-speed 0 \, vib-depth 0 \, dsp-switch 1;
+#X msg 119 222 release-time-range 1000 2000;
+#X connect 9 0 10 0;
+#X connect 10 0 17 0;
+#X connect 12 0 13 0;
+#X connect 13 0 17 0;
+#X connect 14 0 15 0;
+#X connect 15 0 17 0;
+#X connect 18 0 20 0;
+#X connect 19 0 21 0;
+#X connect 20 0 22 0;
+#X connect 21 0 22 0;
+#X connect 24 0 25 0;
+#X connect 25 0 30 0;
+#X connect 26 0 30 0;
+#X connect 29 0 30 0;
+#X connect 31 0 0 0;
+#X connect 34 0 35 0;
+#X connect 35 0 45 0;
+#X connect 36 0 44 0;
+#X connect 37 0 44 0;
+#X connect 38 0 33 0;
+#X connect 39 0 40 0;
+#X connect 40 0 33 0;
+#X connect 41 0 44 0;
+#X connect 42 0 45 0;
+#X connect 43 0 22 0;
+#X connect 50 0 33 0;
+#X connect 51 0 33 0;
+#X connect 55 0 53 0;
+#X connect 56 0 53 0;
+#X connect 57 0 32 0;
+#X connect 58 0 33 0;
+#X restore 214 269 pd commands;
+#X text 231 432 \$2: desired number of voices in the oscillator bank
+(how many can your CPU handle?);
+#N canvas 154 73 855 583 presets 0;
+#X obj 64 14 inlet;
+#X obj 101 518 outlet;
+#X msg 200 322 amp-thresh 0.1 \, attack-time-range 125 250 \, release-time-range
+2000 4000 \, gliss-range -3 0.5 \, gliss-onset-delay-range 50 750 \,
+gliss-dur-range 500 2000 \, tremolo-rate-range 0.25 4 \, pitch-switch
+0 \, dsp-switch 1;
+#X obj 64 36 select 0 1 2 3;
+#X msg 150 252 amp-thresh 0.1 \, attack-time-range 125 250 \, release-time-range
+2000 4000 \, gliss-range 0 0 \, gliss-onset-delay-range 50 750 \, gliss-dur-range
+500 2000 \, tremolo-rate-range 0.25 10 \, pitch-switch 0 \, dsp-switch
+1;
+#X msg 63 107 amp-thresh 0.2 \, attack-time-range 5 10 \, release-time-range
+250 500 \, gliss-range 0 0 \, gliss-onset-delay-range 50 750 \, gliss-dur-range
+500 2000 \, tremolo-rate-range 0 0 \, pitch-switch 0 \, dsp-switch
+1;
+#X msg 515 64 \; preset-label label Default \;;
+#X msg 545 184 \; preset-label label Melting \;;
+#X obj 470 31 select 0 1 2 3;
+#X msg 525 104 \; preset-label label Pitch-chord \;;
+#X msg 100 182 amp-thresh 0.1 \, attack-time-range 10 50 \, release-time-range
+125 250 \, gliss-range 0 0 \, tremolo-rate-range 0 0 \, pitch-switch
+1 \, pitch-list 48 52 55 57 60 62 64 67 \, dsp-switch 1;
+#X msg 535 144 \; preset-label label Smoothed-&-tremolo \;;
+#X connect 0 0 3 0;
+#X connect 0 0 8 0;
+#X connect 2 0 1 0;
+#X connect 3 0 5 0;
+#X connect 3 1 10 0;
+#X connect 3 2 4 0;
+#X connect 3 3 2 0;
+#X connect 4 0 1 0;
+#X connect 5 0 1 0;
+#X connect 8 0 6 0;
+#X connect 8 1 9 0;
+#X connect 8 2 11 0;
+#X connect 8 3 7 0;
+#X connect 10 0 1 0;
+#X restore 240 328 pd presets;
+#X obj 240 308 hradio 15 1 0 4 empty empty empty 0 -8 0 10 -262144
+-1 -1 0;
+#X text 339 307 <<<< Try a few presets;
+#X obj 321 328 cnv 15 100 20 empty preset-label Default 20 12 0 14
+-262144 -66577 0;
+#X msg 26 48 open ./audio/oboe.wav \, start;
+#X msg 56 88 open ./audio/voice.wav \, start;
+#X msg 76 118 stop;
+#X text 484 524 William Brent \, December 2017;
+#X text 484 504 [martha~] version 0.6;
+#X text 293 21 [martha~] is a companion to the [sigmund~] analysis
+object. It's designed to accept output from [sigmund~]'s sinusoidal
+tracking function \, "tracks". In addition to providing an internal
+oscillator bank and doing all the data/voice bookkeeping \, it has
+some useful features for independent glissing and amplitude pulsing
+of individual partials. [martha~] is also capable of managing the attack
+and release times of partials and forcing inharmonic spectra to harmonic
+arrangements. Combined \, these features can create a variety of interesting
+effects.;
+#X obj 68 368 cnv 15 130 60 empty empty empty 20 12 0 14 -233017 -66577
+0;
+#X obj 78 391 martha~ 18 86;
+#X connect 0 0 3 0;
+#X connect 0 1 13 0;
+#X connect 3 0 20 0;
+#X connect 7 0 20 1;
+#X connect 9 0 20 1;
+#X connect 10 0 9 0;
+#X connect 13 0 0 0;
+#X connect 14 0 0 0;
+#X connect 15 0 0 0;
+#X connect 20 0 2 0;

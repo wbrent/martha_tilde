@@ -1,1 +1,3 @@
 # martha_tilde
+
+[martha~] is a companion to Pure Data's [sigmund~] analysis object. It's designed to accept output from [sigmund~]'s sinusoidal tracking function, "tracks". In addition to providing an internal oscillator bank and doing all the data/voice bookkeeping, it has some useful features for independent glissing and amplitude pulsing of individual partials. [martha~] is also capable of managing the attack and release times of partials and forcing inharmonic spectra to harmonic arrangements. Combined, these features can create a variety of interesting effects.
